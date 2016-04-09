@@ -82,6 +82,9 @@ class TablePress_Carousel {
     }
 
     public static function datatables_parameters( $parameters, $table_id, $html_id, $js_options ) {
+        if ( !$render_options['carousel'] ) {
+            return $parameters;
+        }
         // DataTables Responsive Collapse/Row Details mode.
         $parameters['scrollX'] = '"scrollX":false';
         return $parameters;
