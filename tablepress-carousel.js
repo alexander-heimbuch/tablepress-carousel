@@ -58,20 +58,29 @@
             });
         },
 
-        nextCol = function ($tableNode, $dataTable) {
+        nextCol = function ($tableNode, $dataTable, columnsInViewport) {
             var hideColIndex;
 
             $tableNode.find('thead').each(function () {
-                var $toHide = $(this).find('th')
-                    .not('.carousel-hidden')
+                var $toHide,
+                    $tableHeaders = $(this).find('th')
                     .not('.carousel-hidden')
                     .not('.carousel-attributes')
-                    .not('.carousel-sticky')
-                    .first();
+                    .not('.carousel-sticky');
+
+                if ($tableHeaders.length <= columnsInViewport) {
+                    return;
+                }
+
+                $toHide = $tableHeaders.first();
 
                 $toHide.outerWidth(0).addClass('carousel-hidden');
                 hideColIndex = $toHide.index();
             });
+
+            if (hideColIndex === undefined) {
+                return;
+            }
 
             $dataTable.columns(hideColIndex).every(function () {
                 $(this.nodes()).addClass('carousel-hidden');
@@ -103,8 +112,17 @@
                 $attributesCol,
                 attributesColumnWidth = 0,
 
+                columnsInViewport = (frameWidth / contentColumnWidth) >> 0,
+
                 $next = $('<a href="javascript:" class="carousel-icon carousel-right"><span>&#10097;</span></a>'),
                 $prev = $('<a href="javascript:" class="carousel-icon carousel-left"><span>&#10097;</span></a>');
+
+            // fallbacks
+            carousel['sticky-cols'] = carousel['sticky-cols'] || [];
+
+            if (columnsInViewport <= 1) {
+                carousel['attributes-col'] = 0;
+            }
 
             if (carousel['attributes-col'] > 0) {
                 $attributesCol = $tableNode.find('th:eq(' + (carousel['attributes-col'] - 1) + ')');
@@ -114,19 +132,21 @@
             }
 
             // equalize columns
-            contentColumnWidth = (frameWidth - attributesColumnWidth) / ((frameWidth / contentColumnWidth) >> 0);
+            contentColumnWidth = (frameWidth - attributesColumnWidth) / columnsInViewport;
 
             // set the column width for every content column
             setColumnWidth($tableNode.find('th'), contentColumnWidth, carousel['attributes-col']);
 
             // set sticky cols
-            carousel['sticky-cols'].forEach(function (colIndex) {
-                $tableNode.find('th:eq(' + (colIndex - 1) + ')').addClass('carousel-sticky');
-            });
+            if (columnsInViewport > 1) {
+                carousel['sticky-cols'].forEach(function (colIndex) {
+                    $tableNode.find('th:eq(' + (colIndex - 1) + ')').addClass('carousel-sticky');
+                });
+            }
 
             // button interactions
             $prev.on('click', function () {
-                nextCol($tableNode, $dataTable);
+                nextCol($tableNode, $dataTable, columnsInViewport);
             });
 
             $next.on('click', function () {

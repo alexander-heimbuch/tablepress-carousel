@@ -72,19 +72,22 @@ class TablePress_Carousel {
     }
 
     public static function table_js_options( $js_options, $table_id, $render_options ) {
-        if( $render_options['carousel'] !== null) {
-            $js_options['carousel'] = true;
-            wp_enqueue_script( self::$slug, plugins_url( 'tablepress-carousel.js', __FILE__ ), array( 'tablepress-datatables' ), self::$version, true );
-            wp_enqueue_style( self::$slug, plugins_url( 'tablepress-carousel.css', __FILE__ ));
+        if( $render_options['carousel'] === null) {
+            return $js_options;
         }
+
+        $js_options['carousel'] = true;
+        wp_enqueue_script( self::$slug, plugins_url( 'tablepress-carousel.js', __FILE__ ), array( 'tablepress-datatables' ), self::$version, true );
+        wp_enqueue_style( self::$slug, plugins_url( 'tablepress-carousel.css', __FILE__ ));
 
         return $js_options;
     }
 
     public static function datatables_parameters( $parameters, $table_id, $html_id, $js_options ) {
-        if ( !$render_options['carousel'] ) {
+        if ( $js_options['carousel'] !== true ) {
             return $parameters;
         }
+
         // DataTables Responsive Collapse/Row Details mode.
         $parameters['scrollX'] = '"scrollX":false';
         return $parameters;
