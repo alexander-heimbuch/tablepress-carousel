@@ -145,11 +145,11 @@
             }
 
             // button interactions
-            $prev.on('click', function () {
+            $next.on('click', function () {
                 nextCol($tableNode, $dataTable, columnsInViewport);
             });
 
-            $next.on('click', function () {
+            $prev.on('click', function () {
                 prevCol($tableNode, $dataTable, contentColumnWidth);
             });
 
