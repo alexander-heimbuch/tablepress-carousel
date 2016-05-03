@@ -1,9 +1,4 @@
-
 (function ($) {
-    if (window.TABLE_CAROUSEL === undefined) {
-        return;
-    }
-
     var repositionNavigation = function ($element, $wrapper, initial, offset) {
             var wrapperOffsetTop = $wrapper.offset().top,
                 scrollOffsetTop = $('body').scrollTop(),
@@ -167,11 +162,18 @@
             });
     };
 
-    $.each(window.TABLE_CAROUSEL, function (tableId, carousel) {
-        var $table = $('#' + tableId);
+    $(document).ready(function () {
+        if (window.TABLE_CAROUSEL === undefined) {
+            return;
+        }
+        
+        $.each(window.TABLE_CAROUSEL, function (tableId, carousel) {
+            var $table = $('#' + tableId);
 
-        $table.on( 'draw.dt', function () {
-            drawCarousel($table, carousel);
-        });
-    });
+            $table.on( 'draw.dt', function () {
+                drawCarousel($table, carousel);
+            });
+        });     
+    })
+
 })(jQuery);
