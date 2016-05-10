@@ -4,14 +4,14 @@
  *
  * @package TablePress Plugins
  * @author Alexander Heimbuch
- * @version 0.1
+ * @version 1.2
  */
 
 /*
 Plugin Name: TablePress Extension: Carousel
 Plugin URI: http://aktivstoff.de/
 Description: Extend TablePress tables with the ability to navigate through a table with a carousel
-Version: 0.1
+Version: 1.2
 Author: Alexander Heimbuch
 Author URI: http://aktivstoff.de
 Author email: kontakt@aktivstoff.de

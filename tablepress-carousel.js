@@ -30,7 +30,7 @@
                     return;
                 }
 
-                colWidth = $(this.nodes()[0]).width();
+                colWidth = $(this.nodes()[0]).outerWidth();
 
                 if (colWidth > columnWidth) {
                     columnWidth = colWidth;
@@ -40,16 +40,17 @@
             return columnWidth;
         },
 
-        setColumnWidth = function ($columns, width, ignoreCol) {
+        setColumnWidth = function ($columns, width, ignoreCol, includePadding) {
             ignoreCol = ignoreCol || 0;
-
+            includePadding = includePadding || false;
             $columns.each(function (columnIndex, node) {
+		$node = $(node);
                 // attributes col should not be the base of column width calculation
                 if (ignoreCol > 0 && (columnIndex + 1) === ignoreCol) {
                     return;
                 }
-
-                $(node).width(width);
+		
+		$node[includePadding ? 'outerWidth' : 'width'](width);
             });
         },
 
@@ -88,7 +89,7 @@
             $tableNode.find('thead').each(function () {
                 var $toShow = $(this).find('th.carousel-hidden').last();
 
-                $toShow.width(columnWidth).removeClass('carousel-hidden');
+                $toShow.outerWidth(columnWidth).removeClass('carousel-hidden');
                 showColIndex = $toShow.index();
             });
 
@@ -120,17 +121,18 @@
             }
 
             if (carousel['attributes-col'] > 0) {
-                $attributesCol = $tableNode.find('th:eq(' + (carousel['attributes-col'] - 1) + ')');
-                $attributesCol.addClass('carousel-attributes');
+                $attributesCols = $tableNode.find('th:eq(' + (carousel['attributes-col'] - 1) + '), td:eq(' + (carousel['attributes-col'] - 1) + ')');
+                $attributesCols.addClass('carousel-attributes');
                 attributesColumnWidth = calcColumnWidth($dataTable.columns(carousel['attributes-col'] - 1));
-                setColumnWidth($attributesCol, contentColumnWidth, carousel['attributes-col']);
+                setColumnWidth($attributesCols, attributesColumnWidth, carousel['attributes-col']);
+columnsInViewport -= 1;
             }
 
             // equalize columns
             contentColumnWidth = (frameWidth - attributesColumnWidth) / columnsInViewport;
 
             // set the column width for every content column
-            setColumnWidth($tableNode.find('th'), contentColumnWidth, carousel['attributes-col']);
+            setColumnWidth($tableNode.find('th'), contentColumnWidth, carousel['attributes-col'], true);
 
             // set sticky cols
             if (columnsInViewport > 1) {
